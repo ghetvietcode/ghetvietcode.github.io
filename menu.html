@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;500;600&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      :root {
+        --bg-color: #0a0a14;
+        --panel-bg: rgba(20, 20, 40, 0.6);
+        --primary-accent: #00f5ff;
+        --secondary-accent: #ff00ff;
+        --text-color: #e0e0e0;
+        --border-color: rgba(0, 245, 255, 0.25);
+        --border-hover: rgba(0, 245, 255, 0.8);
+        --shadow-color: rgba(0, 245, 255, 0.3);
+        --font-body: 'Poppins', sans-serif;
+        --font-title: 'Orbitron', sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes pulse-glow {
+        0%, 100% { text-shadow: 0 0 5px var(--primary-accent), 0 0 10px var(--primary-accent), 0 0 20px var(--secondary-accent); color: var(--primary-accent); }
+        50% { text-shadow: 0 0 10px var(--primary-accent), 0 0 20px var(--primary-accent), 0 0 40px var(--secondary-accent); color: white; }
+      }
+      body {
+        font-family: var(--font-body);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding-top: 80px;
+      }
+      #star-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
+
+      /* --- HEADER --- */
+      .main-header {
+        position: fixed; top: 0; left: 0;
+        width: 100%; padding: 15px 5%;
+        background: rgba(10, 10, 20, 0.7);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        z-index: 1000;
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      .logo {
+        font-family: var(--font-title);
+        font-size: 24px; font-weight: bold; color: white;
+        text-decoration: none; text-shadow: 0 0 8px var(--primary-accent);
+      }
+      .main-nav ul { list-style: none; display: flex; align-items: center; gap: 30px; }
+      .main-nav a, #menu-logout-btn {
+        color: var(--text-color);
+        text-decoration: none; font-size: 16px; font-weight: 500;
+        padding: 5px 0; position: relative;
+        cursor: pointer; background: none; border: none;
+        font-family: var(--font-body);
+      }
+      .main-nav a::after, #menu-logout-btn::after {
+        content: '';
+        position: absolute; bottom: -5px; left: 0;
+        width: 0; height: 2px;
+        background-color: var(--primary-accent);
+        transition: width 0.3s ease-out;
+      }
+      .main-nav a:hover::after, .main-nav a.active::after, #menu-logout-btn:hover::after { width: 100%; }
+      #menu-logout-btn:hover { color: #ff4757; }
+      #menu-logout-btn:hover::after { background-color: #ff4757; }
+      .hamburger-menu { display: none; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+      @media (max-width: 768px) {
+          .main-nav { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: rgba(10, 10, 20, 0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border-color); }
+          .main-nav.active { display: block; }
+          .main-nav ul { flex-direction: column; align-items: center; padding: 20px 0; gap: 20px; }
+          .hamburger-menu { display: block; }
+      }
+
+      /* --- MAIN CONTENT --- */
+      .container { display: flex; max-width: 1200px; padding: 0 20px; z-index: 1; justify-content: center; animation: fadeIn 0.8s ease-out; }
+      .frame {
+        width: 100%; max-width: 400px;
+        padding: 35px; border-radius: 20px;
+        backdrop-filter: blur(12px);
+        background: var(--panel-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 1px 1px rgba(255,255,255,0.05);
+      }
+      .main-title {
+        font-family: var(--font-title);
+        text-align: center; letter-spacing: 2px;
+        margin-bottom: 15px; font-size: 24px;
+        animation: pulse-glow 4s linear infinite;
+        text-transform: uppercase;
+      }
+      .subtitle { font-size: 14px; margin-bottom: 30px; opacity: 0.8; text-align:center; }
+      #game-select {
+        width: 100%;
+        padding: 14px 20px; margin-bottom: 25px;
+        border-radius: 10px; border: 1px solid var(--border-color);
+        font-size: 16px; background: rgba(0,0,0,0.2);
+        color: var(--text-color); appearance: none;
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300f5ff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+        background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px;
+        transition: all 0.3s ease;
+      }
+      #game-select:focus {
+        border-color: var(--border-hover);
+        box-shadow: 0 0 15px var(--shadow-color);
+        outline: none;
+      }
+      #game-select option { background: #0a0a14; color: var(--text-color); }
+      .submit-btn {
+        width: 100%;
+        padding: 14px; margin-top: 10px;
+        border-radius: 10px; border: none;
+        font-weight: 600; font-family: var(--font-title);
+        font-size: 16px; cursor: pointer; color: white;
+        text-transform: uppercase; letter-spacing: 1px;
+        background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
+        transition: all 0.3s ease;
+      }
+      .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px var(--shadow-color);
+      }
+    </style>
+</head>
+<body>
+    <script>
+        (function() {
+            const userInfo = JSON.parse(localStorage.getItem('tool_user_info'));
+            if (!userInfo || !userInfo.isActive) {
+                document.body.style.display = 'none'; 
+                Swal.fire({
+                    background: 'rgba(10, 10, 20, 0.9)', 
+                    color: '#e0e0e0',
+                    title: 'Truy cập bị từ chối!',
+                    text: 'Bạn cần đăng nhập và kích hoạt key để vào trang này. Đang chuyển hướng...',
+                    icon: 'error',
+                    timer: 2500,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = 'index.html';
+                });
+                throw new Error("Authentication failed. Halting script execution.");
+            }
+        })();
+    </script>
+    
+    <canvas id="star-canvas"></canvas>
+    <header class="main-header">
+        <a href="key.html" class="logo">TRAN BINH AN ----></a>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="key.html">Home 🏠</a></li>
+                <li><a href="#" class="active">Chọn Game</a></li>
+                <li><button id="menu-logout-btn">Đăng xuất</button></li>
+            </ul>
+        </nav>
+        <button class="hamburger-menu" id="hamburger-menu"><i class="fas fa-bars"></i></button>
+    </header>
+
+    <div class="container">
+        <div class="frame">
+            <h1 class="main-title">GAME CENTER</h1>
+            <p class="subtitle">Chọn một cổng game để bắt đầu</p>
+            <select id="game-select">
+                <option value="" disabled selected>-- Chọn game --</option>
+                <option value="Sunwin">Sunwin</option>
+                <option value="789Club">789Club</option>
+                <option value="SicboSun">Sicbo Sun</option>
+                <option value="Sicbo789">Sicbo 789</option>
+                <option value="Hitclub">Hitclub</option>
+            </select>
+            <button id="login-btn" class="submit-btn">Xâm Nhập</button>
+        </div>
+    </div>
+
+    <script>
+        const gameSelect = document.getElementById('game-select');
+        const loginBtn = document.getElementById('login-btn');
+        const menuLogoutBtn = document.getElementById('menu-logout-btn');
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const mainNav = document.querySelector('.main-nav');
+        
+        const swalConfig = {
+            background: 'rgba(10, 10, 20, 0.9)',
+            color: '#e0e0e0',
+            confirmButtonColor: '#00f5ff'
+        };
+
+        loginBtn.addEventListener('click', () => {
+            const selectedGame = gameSelect.value;
+            if (!selectedGame) {
+                Swal.fire({...swalConfig, title:'Chưa chọn game!', text:'Vui lòng chọn một game từ danh sách.', icon:'warning'});
+                return;
+            }
+            let targetUrl = '';
+            switch (selectedGame) {
+                case 'Sunwin': targetUrl = 'toolsun.html'; break;
+                case '789Club': targetUrl = 'tool789.html'; break;
+                case 'SicboSun': targetUrl = 'sicbosun.html'; break;
+                case 'Sicbo789': targetUrl = 'sicbo789.html'; break;
+                case 'Hitclub': targetUrl = 'toolhitclub.html'; break;
+                default:
+                    Swal.fire({...swalConfig, title:'Lỗi', text:'Lựa chọn không hợp lệ.', icon:'error'});
+                    return;
+            }
+            Swal.fire({
+                ...swalConfig,
+                title: `Đang vào tool ${selectedGame}...`,
+                icon: 'info',
+                timer: 1500,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            }).then(() => {
+                window.location.href = targetUrl;
+            });
+        });
+
+        menuLogoutBtn.addEventListener('click', () => {
+             localStorage.clear();
+             Swal.fire({
+                ...swalConfig,
+                title: 'Đã đăng xuất!',
+                text: 'Đang chuyển hướng...', 
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+             }).then(() => {
+                window.location.href = 'index.html';
+             });
+        });
+        
+        hamburgerMenu.addEventListener('click', () => mainNav.classList.toggle('active'));
+
+        const starCanvas = document.getElementById('star-canvas'); if(starCanvas) { const ctx = starCanvas.getContext('2d'); starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight; let stars = []; for(let i=0; i<200; i++) { stars.push({x: Math.random(), y: Math.random(), z: Math.random()}); } function drawStars() { ctx.clearRect(0, 0, starCanvas.width, starCanvas.height); stars.forEach(s => { let x = s.x * starCanvas.width; let y = s.y * starCanvas.height; let z = s.z; s.z += 0.001; if(s.z > 1) { s.z = Math.random()*0.1; s.x = Math.random(); s.y = Math.random(); } ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${z})`; ctx.arc(x, y, z * 2, 0, Math.PI * 2); ctx.fill(); }); requestAnimationFrame(drawStars); } drawStars(); window.addEventListener('resize', () => { starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight; }); }
+    </script>
+</body>
+</html>

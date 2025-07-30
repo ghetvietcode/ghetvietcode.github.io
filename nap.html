@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nạp Tiền</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;500;600&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      :root {
+        --bg-color: #0a0a14;
+        --panel-bg: rgba(20, 20, 40, 0.6);
+        --primary-accent: #00f5ff;
+        --secondary-accent: #ff00ff;
+        --text-color: #e0e0e0;
+        --border-color: rgba(0, 245, 255, 0.25);
+        --border-hover: rgba(0, 245, 255, 0.8);
+        --shadow-color: rgba(0, 245, 255, 0.3);
+        --font-body: 'Poppins', sans-serif;
+        --font-title: 'Orbitron', sans-serif;
+        --font-mono: 'Fira Code', monospace;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes pulse-glow {
+        0%, 100% { text-shadow: 0 0 5px var(--primary-accent), 0 0 10px var(--primary-accent); color: var(--primary-accent); }
+        50% { text-shadow: 0 0 10px var(--primary-accent), 0 0 20px var(--primary-accent); color: white; }
+      }
+      body {
+        font-family: var(--font-body);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        display: flex; justify-content: center; align-items: flex-start;
+        min-height: 100vh; padding: 60px 20px;
+        overflow-y: auto;
+      }
+      #star-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
+      .transaction-container {
+        width: 100%; max-width: 420px;
+        padding: 35px; border-radius: 20px;
+        backdrop-filter: blur(12px);
+        background: var(--panel-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 1px 1px rgba(255,255,255,0.05);
+        position: relative; text-align: center;
+        animation: fadeIn 0.8s ease-out;
+      }
+      h2 {
+        font-family: var(--font-title);
+        letter-spacing: 2px;
+        margin-bottom: 30px; font-size: 24px;
+        text-transform: uppercase;
+        animation: pulse-glow 5s linear infinite;
+      }
+      label {
+        display: block; font-weight: 500;
+        color: var(--primary-accent);
+        margin-bottom: 15px; text-align: left;
+        font-size: 14px; text-transform: uppercase;
+      }
+      input[type=number] {
+        width: 100%; padding: 14px 15px;
+        margin-bottom: 25px; border-radius: 10px;
+        border: 1px solid var(--border-color);
+        font-size: 18px; transition: all 0.3s ease;
+        background: rgba(0,0,0,0.2);
+        color: var(--text-color);
+        font-family: var(--font-mono);
+        -moz-appearance: textfield;
+      }
+      input[type=number]:focus {
+        border-color: var(--border-hover);
+        box-shadow: 0 0 15px var(--shadow-color);
+        outline: none;
+      }
+      input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+      .main-button {
+        width: 100%; padding: 14px;
+        margin-top: 10px; border-radius: 10px;
+        border: none; font-weight: 600;
+        font-family: var(--font-title);
+        font-size: 16px; cursor: pointer;
+        transition: all 0.3s ease;
+        color: #fff; text-transform: uppercase; letter-spacing: 1px;
+      }
+      .main-button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); }
+      #continue-btn { background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent)); }
+      #confirm-btn { background: linear-gradient(45deg, #28a745, #2fbf71); }
+      .back-button {
+        position: absolute; top: 20px; left: 20px;
+        width: 40px; height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--primary-accent);
+        text-decoration: none; font-size: 18px;
+        transition: all 0.3s;
+      }
+      #step2-transfer-details { display: none; }
+      .qr-image {
+        max-width: 240px; width: 100%;
+        border-radius: 16px; margin: 10px auto 25px;
+        border: 4px solid white;
+        background: white;
+        box-shadow: 0 0 20px rgba(255,255,255,0.5);
+      }
+      .info-line {
+        display: flex; justify-content: space-between; align-items: center;
+        background: rgba(0,0,0,0.3);
+        padding: 14px 18px; border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 25px;
+      }
+      .info-line span { color: #bbb; }
+      .info-line strong {
+        color: #2eff7b;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        font-size: 1.1em;
+      }
+    </style>
+</head>
+<body>
+    <canvas id="star-canvas"></canvas>
+    <div class="transaction-container">
+        <a href="key.html" class="back-button" title="Quay lại"><i class="fas fa-arrow-left"></i></a>
+        <div id="step1-amount-input">
+            <h2>NẠP TIỀN</h2>
+            <label for="amount"><i class="fas fa-money-bill-wave"></i> Nhập số tiền cần nạp (VND)</label>
+            <input type="number" id="amount" placeholder="Tối thiểu 10,000" min="10000" required>
+            <button id="continue-btn" class="main-button">Tạo Lệnh Nạp</button>
+        </div>
+        <div id="step2-transfer-details">
+            <h2>QUÉT MÃ CHUYỂN KHOẢN</h2>
+            <p style="font-size: 14px; opacity: 0.8; margin-bottom: 20px;">Quét mã QR để thanh toán. Nội dung chuyển khoản đã được tạo tự động.</p>
+            <img src="" id="qr-image" alt="Mã QR Ngân hàng" class="qr-image">
+            <div class="info-line"><span>Nội dung CK</span><strong id="transaction-content-text"></strong></div>
+            <button id="confirm-btn" class="main-button">Tôi Đã Chuyển Khoản</button>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzchhWEn9h0gKIcZrCKcyT3b540oeexoW4cbvXkFqv60CU8zzhc-ZIiWrcPuiKWV2iA/exec';
+        
+        const swalConfig = {
+            background: 'rgba(10, 10, 20, 0.9)',
+            color: '#e0e0e0',
+            confirmButtonColor: '#00f5ff',
+            confirmButtonText: 'Đồng Ý',
+            cancelButtonText: 'Hủy Bỏ'
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userInfo = JSON.parse(localStorage.getItem('tool_user_info'));
+            if (!userInfo) { Swal.fire({...swalConfig, title:'Lỗi', text:'Bạn cần đăng nhập để nạp tiền.', icon:'error'}).then(() => window.location.href = 'index.html'); return; }
+
+            const step1 = document.getElementById('step1-amount-input');
+            const step2 = document.getElementById('step2-transfer-details');
+            const amountInput = document.getElementById('amount');
+            const continueBtn = document.getElementById('continue-btn');
+            const confirmBtn = document.getElementById('confirm-btn');
+            
+            let amountValue = 0, transactionId = '', bankDetails = {};
+
+            async function loadBankDetails() {
+                try {
+                    const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'getBankDetails' }) });
+                    const result = await res.json();
+                    if (result.status === 'success') { 
+                        bankDetails = result.details;
+                    } else { 
+                        throw new Error('Không thể tải thông tin thanh toán từ Admin.');
+                    }
+                } catch (error) { 
+                    Swal.fire({...swalConfig, title: 'Lỗi', text: error.message, icon:'error'});
+                    continueBtn.disabled = true;
+                    continueBtn.textContent = 'Lỗi Tải Thông Tin';
+                }
+            }
+            loadBankDetails();
+
+            continueBtn.addEventListener('click', function() {
+                amountValue = parseInt(amountInput.value, 10);
+                if (isNaN(amountValue) || amountValue < 10000) { 
+                    Swal.fire({...swalConfig, title:'Số tiền không hợp lệ!', text:'Vui lòng nhập số, tối thiểu 10,000 VNĐ.', icon:'error'}); 
+                    return; 
+                }
+                if (!bankDetails.AccountNumber || !bankDetails.BankBin) { 
+                    Swal.fire({...swalConfig, title:'Lỗi', text:'Thông tin ngân hàng của Admin chưa được cấu hình.', icon:'error'}); 
+                    return; 
+                }
+           
+                transactionId = 'NAP' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                
+                const encodedDescription = encodeURIComponent(transactionId);
+                const encodedAccountName = encodeURIComponent(bankDetails.AccountName);
+                const qrLink = `https://img.vietqr.io/image/${bankDetails.BankBin}-${bankDetails.AccountNumber}-compact2.png?amount=${amountValue}&addInfo=${encodedDescription}&accountName=${encodedAccountName}`;
+
+                document.getElementById('qr-image').src = qrLink;
+                document.getElementById('transaction-content-text').textContent = transactionId;
+                
+                step1.style.display = 'none';
+                step2.style.display = 'block';
+            });
+
+            confirmBtn.addEventListener('click', async function() {
+                this.disabled = true; 
+                this.textContent = 'Đang gửi yêu cầu...';
+                try {
+                    const res = await fetch(SCRIPT_URL, { 
+                        method: 'POST', 
+                        body: JSON.stringify({ action: 'depositRequest', username: userInfo.username, amount: amountValue, transactionId }) 
+                    });
+                    const result = await res.json();
+                    if (result.status === 'success') { 
+                        await Swal.fire({...swalConfig, title:'Gửi Yêu Cầu Thành Công!', text:result.message, icon:'success'}); 
+                        window.location.href = 'key.html';
+                    } else { 
+                        throw new Error(result.message); 
+                    }
+                } catch (error) { 
+                    Swal.fire({...swalConfig, title:'Gửi yêu cầu thất bại!', text:error.message, icon:'error'}); 
+                    this.disabled = false; 
+                    this.textContent = 'Tôi Đã Chuyển Khoản';
+                }
+            });
+        });
+       const starCanvas = document.getElementById('star-canvas'); const ctx = starCanvas.getContext('2d'); function setCanvasSize() { starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight; } setCanvasSize(); window.addEventListener('resize', setCanvasSize); const stars = []; for (let i = 0; i < 200; i++) { stars.push({ x: Math.random(), y: Math.random(), z: Math.random() }); } function drawStars() { ctx.clearRect(0, 0, starCanvas.width, starCanvas.height); stars.forEach(s => { let x = s.x * starCanvas.width; let y = s.y * starCanvas.height; let z = s.z; s.z += 0.001; if(s.z > 1) { s.z = Math.random()*0.1; s.x = Math.random(); s.y = Math.random(); } ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${z})`; ctx.arc(x, y, z * 2, 0, Math.PI * 2); ctx.fill(); }); requestAnimationFrame(drawStars); } drawStars();
+    </script>
+</body>
+</html>

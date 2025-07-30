@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Sử Mua Hàng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;500;600&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      :root {
+        --bg-color: #0a0a14;
+        --panel-bg: rgba(20, 20, 40, 0.6);
+        --primary-accent: #00f5ff;
+        --secondary-accent: #ff00ff;
+        --text-color: #e0e0e0;
+        --border-color: rgba(0, 245, 255, 0.25);
+        --shadow-color: rgba(0, 245, 255, 0.3);
+        --font-body: 'Poppins', sans-serif;
+        --font-title: 'Orbitron', sans-serif;
+        --font-mono: 'Fira Code', monospace;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes pulse-glow {
+        0%, 100% { text-shadow: 0 0 5px var(--primary-accent), 0 0 10px var(--primary-accent); color: var(--primary-accent); }
+        50% { text-shadow: 0 0 10px var(--primary-accent), 0 0 20px var(--primary-accent); color: white; }
+      }
+      body {
+        font-family: var(--font-body);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100vh;
+        padding-top: 60px;
+      }
+      #star-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
+      .container { max-width: 800px; width: 100%; margin: 20px auto; padding: 0 20px; animation: fadeIn 0.8s ease-out; }
+      .frame {
+        padding: 35px;
+        border-radius: 20px;
+        backdrop-filter: blur(12px);
+        background: var(--panel-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 1px 1px rgba(255,255,255,0.05);
+        position: relative;
+      }
+      .main-title {
+        font-family: var(--font-title);
+        text-align: center;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+        font-size: 24px;
+        animation: pulse-glow 4s linear infinite;
+        text-transform: uppercase;
+      }
+      .back-button {
+        position: absolute;
+        top: 25px; left: 25px;
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 1px solid var(--border-color);
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(0, 245, 255, 0.1);
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+      .back-button:hover {
+        background: rgba(0, 245, 255, 0.2);
+        transform: scale(1.1);
+        box-shadow: 0 0 10px var(--shadow-color);
+      }
+      .history-table-wrapper { overflow-x: auto; margin-top: 20px; }
+      .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+      }
+      th, td {
+        padding: 16px 20px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+      thead tr { border-bottom: 2px solid var(--primary-accent); }
+      th {
+        color: var(--primary-accent);
+        text-transform: uppercase;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      tbody tr { transition: background-color 0.3s ease; }
+      tbody tr:hover { background-color: rgba(0, 245, 255, 0.07); }
+      .col-package { font-weight: 600; color: #fff; }
+      .col-key {
+        color: #2eff7b;
+        font-family: var(--font-mono);
+        cursor: pointer;
+        position: relative;
+        font-weight: 500;
+      }
+      .col-key:hover::after {
+          content: 'copy';
+          position: absolute;
+          right: -5px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: var(--primary-accent);
+          color: black;
+          padding: 2px 5px;
+          border-radius: 4px;
+          font-size: 10px;
+          font-family: var(--font-body);
+      }
+      .col-date { color: #aaa; font-size: 14px; white-space: nowrap; }
+      #loading-message, #no-history-message { text-align: center; padding: 60px; font-size: 1.2em; color: #aaa; }
+      #loading-message i { margin-right: 10px; color: var(--primary-accent); }
+    </style>
+</head>
+<body>
+    <canvas id="star-canvas"></canvas>
+    <div class="container">
+        <div class="frame">
+            <a href="key.html" class="back-button" title="Quay lại"><i class="fas fa-arrow-left"></i></a>
+            <h2 class="main-title">LỊCH SỬ GIAO DỊCH</h2>
+            <div class="history-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Gói Key</th>
+                            <th>Mã Key</th>
+                            <th class="col-date">Thời Gian Mua</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body"></tbody>
+                </table>
+                <div id="loading-message">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu...
+                </div>
+                <div id="no-history-message" style="display: none;">Chưa có lịch sử giao dịch nào.</div>
+            </div>
+        </div>
+    </div>
+    <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzchhWEn9h0gKIcZrCKcyT3b540oeexoW4cbvXkFqv60CU8zzhc-ZIiWrcPuiKWV2iA/exec";
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const userInfo = JSON.parse(localStorage.getItem('tool_user_info'));
+        if (!userInfo || !userInfo.username) { 
+            window.location.href = 'index.html'; 
+            return; 
+        }
+        fetchHistory(userInfo.username);
+    });
+
+    async function fetchHistory(username) {
+        const loadingMessage = document.getElementById('loading-message');
+        const noHistoryMessage = document.getElementById('no-history-message');
+        const historyBody = document.getElementById('history-body');
+
+        try {
+            const res = await fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'getPurchaseHistory', username: username })
+            });
+            const result = await res.json();
+            if (result.status === 'success') {
+                historyBody.innerHTML = '';
+                if (result.data.history.length === 0) {
+                    noHistoryMessage.style.display = 'block';
+                } else {
+                    noHistoryMessage.style.display = 'none';
+                    historyBody.innerHTML = result.data.history.map(item => `
+                        <tr>
+                            <td class="col-package">${item.package}</td>
+                            <td class="col-key" title="Click để sao chép">${item.key}</td>
+                            <td class="col-date">${item.date}</td>
+                        </tr>
+                    `).join('');
+                }
+            } else { 
+                throw new Error(result.message);
+            }
+        } catch (error) { 
+            Swal.fire({
+              title: 'Lỗi', 
+              text: 'Không thể tải lịch sử: ' + error.message, 
+              icon: 'error',
+              background: 'rgba(20, 20, 40, 0.9)', color: '#e0e0e0'
+            });
+        } finally { 
+            loadingMessage.style.display = 'none';
+        }
+
+        historyBody.addEventListener('click', (event) => {
+            if(event.target.classList.contains('col-key')) {
+                const keyText = event.target.textContent;
+                navigator.clipboard.writeText(keyText).then(() => {
+                    Swal.fire({ 
+                      toast: true, position: 'bottom-end', icon: 'success', title: 'Đã sao chép key!', 
+                      showConfirmButton: false, timer: 1500, background: '#1a2a4a', color: '#e0e0e0'
+                    });
+                });
+            }
+        });
+    }
+
+    const starCanvas = document.getElementById('star-canvas'); if(starCanvas) { const ctx = starCanvas.getContext('2d'); starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight; let stars = []; for(let i=0; i<200; i++) { stars.push({x: Math.random(), y: Math.random(), z: Math.random()}); } function drawStars() { ctx.clearRect(0, 0, starCanvas.width, starCanvas.height); stars.forEach(s => { let x = s.x * starCanvas.width; let y = s.y * starCanvas.height; let z = s.z; s.z += 0.001; if(s.z > 1) { s.z = Math.random() * 0.1; s.x = Math.random(); s.y = Math.random(); } ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${z})`; ctx.arc(x, y, z * 2, 0, Math.PI * 2); ctx.fill(); }); requestAnimationFrame(drawStars); } drawStars(); window.addEventListener('resize', () => { starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight; }); }
+    </script>
+</body>
+</html>
