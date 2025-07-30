@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -41,128 +40,122 @@
       overflow-x: hidden;
     }
     #star-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
-
-```
-.container {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-  animation: fadeIn 0.8s ease-out;
-}
-.frame {
-  background: var(--panel-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 35px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 1px 1px rgba(255,255,255,0.05);
-}
-.main-title {
-  font-family: var(--font-title);
-  text-align: center;
-  letter-spacing: 2px;
-  margin-bottom: 30px;
-  font-size: 24px;
-  font-weight: 700;
-  text-transform: uppercase;
-  animation: pulse-glow 4s linear infinite;
-}
-
-.input-group {
-  position: relative;
-  margin-bottom: 25px;
-}
-.input-group > i.input-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--primary-accent);
-  opacity: 0.7;
-  z-index: 1;
-}
-input[type=text], input[type=password] {
-  width: 100%;
-  padding: 14px 45px 14px 45px;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 500;
-  background: rgba(0,0,0,0.2);
-  color: var(--text-color);
-}
-input:focus {
-  border-color: var(--border-hover);
-  box-shadow: 0 0 15px var(--shadow-color);
-  outline: none;
-}
-.toggle-password {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: var(--primary-accent);
-  opacity: 0.7;
-  z-index: 1;
-  transition: opacity 0.3s ease;
-}
-.toggle-password:hover {
-  opacity: 1;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 14px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: 1px solid var(--primary-accent);
-  font-weight: 600;
-  font-family: var(--font-title);
-  font-size: 16px;
-  cursor: pointer;
-  color: #fff;
-  text-transform: uppercase;
-  background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
-  background-size: 200% 200%;
-  animation: gradient-shift 4s ease infinite;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-@keyframes gradient-shift {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-.submit-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 20px var(--shadow-color);
-}
-.submit-btn:active {
-  transform: translateY(-1px);
-}
-.form-links {
-  text-align: center;
-  margin-top: 25px;
-  font-size: 14px;
-}
-.form-links a {
-  color: var(--primary-accent);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.form-links a:hover {
-  text-decoration: underline;
-  color: #fff;
-  text-shadow: 0 0 5px var(--primary-accent);
-}
-@media (max-width: 768px) {
-  .frame { padding: 25px; }
-  .main-title { font-size: 20px; }
-}
-```
-
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      animation: fadeIn 0.8s ease-out;
+    }
+    .frame {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 35px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 1px 1px rgba(255,255,255,0.05);
+    }
+    .main-title {
+      font-family: var(--font-title);
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+      font-size: 24px;
+      font-weight: 700;
+      text-transform: uppercase;
+      animation: pulse-glow 4s linear infinite;
+    }
+    .input-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+    .input-group > i.input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-accent);
+      opacity: 0.7;
+      z-index: 1;
+    }
+    input[type=text], input[type=password] {
+      width: 100%;
+      padding: 14px 45px 14px 45px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      background: rgba(0,0,0,0.2);
+      color: var(--text-color);
+    }
+    input:focus {
+      border-color: var(--border-hover);
+      box-shadow: 0 0 15px var(--shadow-color);
+      outline: none;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--primary-accent);
+      opacity: 0.7;
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+    .toggle-password:hover {
+      opacity: 1;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--primary-accent);
+      font-weight: 600;
+      font-family: var(--font-title);
+      font-size: 16px;
+      cursor: pointer;
+      color: #fff;
+      text-transform: uppercase;
+      background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
+      background-size: 200% 200%;
+      animation: gradient-shift 4s ease infinite;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    @keyframes gradient-shift {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px var(--shadow-color);
+    }
+    .submit-btn:active {
+      transform: translateY(-1px);
+    }
+    .form-links {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 14px;
+    }
+    .form-links a {
+      color: var(--primary-accent);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .form-links a:hover {
+      text-decoration: underline;
+      color: #fff;
+      text-shadow: 0 0 5px var(--primary-accent);
+    }
+    @media (max-width: 768px) {
+      .frame { padding: 25px; }
+      .main-title { font-size: 20px; }
+    }
   </style>
 </head>
 <body>
@@ -187,27 +180,27 @@ input:focus {
         <a onclick="toggleView()">Chưa có tài khoản? Đăng ký</a>
       </div>
     </div>
-<div id="register-view" style="display:none;">
-  <h2 class="main-title"><i class="fas fa-user-plus"></i> ĐĂNG KÍ <i class="fas fa-atom"></i></h2>
-  <div class="input-group">
-    <i class="fas fa-user-astronaut input-icon"></i>
-    <input type="text" id="registerUser" placeholder="Tên đăng nhập mong muốn" onkeyup="if(event.key === 'Enter') registerUser()">
-  </div>
-  <div class="input-group">
-    <i class="fas fa-key input-icon"></i>
-    <input type="password" id="registerPass" placeholder="Mật khẩu (ít nhất 6 ký tự)" onkeyup="if(event.key === 'Enter') registerUser()">
-    <i class="fas fa-eye toggle-password" onclick="togglePassword('registerPass', this)"></i>
-  </div>
-  <div class="input-group">
-    <i class="fas fa-check-double input-icon"></i>
-    <input type="password" id="registerConfirmPass" placeholder="Xác nhận lại mật khẩu" onkeyup="if(event.key === 'Enter') registerUser()">
-    <i class="fas fa-eye toggle-password" onclick="togglePassword('registerConfirmPass', this)"></i>
-  </div>
-  <button class="submit-btn" onclick="registerUser()"><i class="fas fa-user-check"></i> Tạo Tài Khoản</button>
-  <div class="form-links">
-    <a onclick="toggleView()">Đã có tài khoản? Đăng nhập</a>
-  </div>
-</div>
+    <div id="register-view" style="display:none;">
+      <h2 class="main-title"><i class="fas fa-user-plus"></i> ĐĂNG KÍ <i class="fas fa-atom"></i></h2>
+      <div class="input-group">
+        <i class="fas fa-user-astronaut input-icon"></i>
+        <input type="text" id="registerUser" placeholder="Tên đăng nhập mong muốn" onkeyup="if(event.key === 'Enter') registerUser()">
+      </div>
+      <div class="input-group">
+        <i class="fas fa-key input-icon"></i>
+        <input type="password" id="registerPass" placeholder="Mật khẩu (ít nhất 6 ký tự)" onkeyup="if(event.key === 'Enter') registerUser()">
+        <i class="fas fa-eye toggle-password" onclick="togglePassword('registerPass', this)"></i>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-check-double input-icon"></i>
+        <input type="password" id="registerConfirmPass" placeholder="Xác nhận lại mật khẩu" onkeyup="if(event.key === 'Enter') registerUser()">
+        <i class="fas fa-eye toggle-password" onclick="togglePassword('registerConfirmPass', this)"></i>
+      </div>
+      <button class="submit-btn" onclick="registerUser()"><i class="fas fa-user-check"></i> Tạo Tài Khoản</button>
+      <div class="form-links">
+        <a onclick="toggleView()">Đã có tài khoản? Đăng nhập</a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -327,8 +320,9 @@ async function loginUser() {
     const result = await response.json();
 
     if (result.status === 'success') {
-      // Lưu thông tin người dùng vào bộ nhớ tạm thời thay vì localStorage
-      window.userInfo = result.user;
+      // SỬA LỖI Ở ĐÂY: Lưu thông tin vào localStorage
+      localStorage.setItem('tool_user_info', JSON.stringify(result.user));
+      
       Swal.fire({ 
         ...getSwalStyle(), 
         icon: 'success', 
