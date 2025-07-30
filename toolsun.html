@@ -141,24 +141,34 @@
       }
     }
     
-    // ĐÃ SỬA: Hàm cập nhật giao diện, không còn đảo ngược kết quả
+    // *** ĐÃ SỬA: Hàm này sẽ đảo ngược kết quả dự đoán ***
     function updateDuDoanUI(prediction) {
         const duDoanEl = document.getElementById("duDoan");
         
-        // Chuẩn hóa chuỗi dự đoán gốc từ API để so sánh chính xác
-        const finalPrediction = prediction.toLowerCase().includes('tài') ? 'Tài' : (prediction.toLowerCase().includes('xỉu') || prediction.toLowerCase().includes('xấu') ? 'Xỉu' : prediction);
+        // 1. Chuẩn hóa chuỗi dự đoán gốc từ API
+        const originalPrediction = prediction.toLowerCase().includes('tài') ? 'Tài' : (prediction.toLowerCase().includes('xỉu') || prediction.toLowerCase().includes('xấu') ? 'Xỉu' : prediction);
 
-        // Sử dụng kết quả đã chuẩn hóa (finalPrediction) để cập nhật giao diện, không đảo ngược
-        duDoanEl.innerText = `Dự đoán: ${finalPrediction}`;
+        // 2. Đảo ngược kết quả dự đoán
+        let invertedPrediction;
+        if (originalPrediction === "Tài") {
+            invertedPrediction = "Xỉu";
+        } else if (originalPrediction === "Xỉu") {
+            invertedPrediction = "Tài";
+        } else {
+            // Nếu API không trả về Tài hoặc Xỉu, giữ nguyên giá trị
+            invertedPrediction = originalPrediction;
+        }
+
+        // 3. Cập nhật giao diện với kết quả đã đảo ngược
+        duDoanEl.innerText = `Dự đoán: ${invertedPrediction}`;
         document.getElementById("cauStatus").innerText = "@ghetvietcode - hackgametx.fun";
-
         duDoanEl.classList.remove("du-doan-tai", "du-doan-xiu");
         
-        // Cập nhật class và âm thanh theo kết quả gốc từ API
-        if (finalPrediction === "Tài") {
+        // 4. Cập nhật class và âm thanh theo kết quả đã đảo ngược
+        if (invertedPrediction === "Tài") {
             duDoanEl.classList.add("du-doan-tai");
             document.getElementById("soundTai").play().catch(e => {});
-        } else if (finalPrediction === "Xỉu") {
+        } else if (invertedPrediction === "Xỉu") {
             duDoanEl.classList.add("du-doan-xiu");
             document.getElementById("soundXiu").play().catch(e => {});
         }
